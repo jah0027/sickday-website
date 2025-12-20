@@ -111,7 +111,7 @@ const About = () => {
           <p className="text-lg md:text-xl text-light/70 max-w-3xl mx-auto leading-relaxed">
             Sick Day with Ferris is a local band in the Dallas area playing a mix of covers 
             from the 80's, 90's, and 00's as well as a collection of popular country songs. 
-            We are a five piece group made up of members with many years of collective musical 
+            We are a six piece group made up of members with many years of collective musical 
             experience. 🎸
           </p>
         </motion.div>
