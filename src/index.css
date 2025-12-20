@@ -33,5 +33,6 @@
   
   .btn-secondary {
     @apply bg-transparent border-2 border-secondary text-secondary hover:bg-secondary hover:text-dark font-semibold px-8 py-3 rounded-full transition-all duration-300;
+    margin-left: 2em;
   }
 }

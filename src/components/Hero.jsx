@@ -15,7 +15,7 @@ const Hero = () => {
           transition={{ duration: 1.2 }}
         >
           <img
-            src="https://static.wixstatic.com/media/01ea67_42cd84070c164874b3028af07626efe2~mv2.png/v1/fill/w_334,h_928,al_c,lg_1,q_85,enc_avif,quality_auto/01ea67_42cd84070c164874b3028af07626efe2~mv2.png"
+            src="/Assets/Images/ferris.png"
             alt="Band Logo"
             className="h-full w-auto object-contain ml-auto"
           />
@@ -48,7 +48,7 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.div
-            className="flex justify-center mb-6"
+            className="flex justify-center mb-6 pointer-events-none"
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -88,7 +88,8 @@ const Hero = () => {
 
         {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 ml-8"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          style={{ marginLeft: '1em' }}
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
