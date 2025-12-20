@@ -37,7 +37,7 @@ const About = () => {
       role: 'Bass',
       icon: Music,
       bio: 'It\'s said the soul of the band can be found with it\'s bass arrangements, as the bass provides a connection between the drumbeat and the melody. Chris Jackman on Bass helps listeners identify the beat and get lost in the music.',
-      image: '/Assets/Images/Chris1.jpg',
+      image: '/Assets/Images/chris2.jpg',
     },
     {
       name: 'Matt Hayman',
