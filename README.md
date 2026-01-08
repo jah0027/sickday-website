@@ -1,3 +1,24 @@
+
+This website is hosted on [Netlify](https://www.netlify.com/):
+
+1. Push your code to GitHub.
+2. Connect your repository to Netlify (via the Netlify dashboard).
+3. Netlify will detect your `netlify.toml` and build the site automatically.
+4. Your site will be live at your Netlify domain (or a custom domain you configure).
+
+**Build command:** `npm run build`
+**Publish directory:** `dist`
+
+You can manage environment variables, deploy previews, and domain settings in the Netlify dashboard.
+# Backend Integration
+
+The Sick Day website integrates with a Python backend agent (deployed on Render) for booking automation and email replies. Inbound emails to the band are processed by the backend, which now automatically replies using AI.
+
+**If you update the backend:**
+- Make sure the Render deployment is up to date for new features (like automated email replies).
+- The frontend can be updated and deployed independently, but some features (like booking automation) depend on the backend being live.
+
+See the backend's README in `booking-agent/agent/README.md` for more details.
 # Sick Day with Ferris - Official Website 🎸
 
 A modern, fun, and energetic website for the band Sick Day with Ferris.
