@@ -8,36 +8,37 @@ const Music = () => {
   const [duration, setDuration] = useState(0)
   const audioRef = useRef(null)
 
+  const sharedCover = '/Assets/Images/ferris.png'; // Use the header image for all songs
   const songs = [
     {
-      title: 'Chicken Fried',
+      title: 'The Ocean',
       artist: 'Cover',
-      file: '/Assets/Music/chicken fried.mp3',
-      cover: '/Assets/Images/chickenfried.png',
-    },
-    {
-      title: 'Hard to Handle',
-      artist: 'Cover',
-      file: '/Assets/Music/hard to handle.mp3',
-      cover: '/Assets/Images/Hard to Handle.png',
-    },
-    {
-      title: 'Harder to Breathe',
-      artist: 'Cover',
-      file: '/Assets/Music/harder to breathe.mp3',
-      cover: '/Assets/Images/Harder to Breath.png',
+      file: '/Assets/Music/the ocean.mp3',
+      cover: sharedCover,
     },
     {
       title: 'The Middle',
       artist: 'Cover',
       file: '/Assets/Music/the middle.mp3',
-      cover: '/Assets/Images/the middle.png',
+      cover: sharedCover,
     },
     {
-      title: 'The Ocean',
+      title: 'Hard to Handle',
       artist: 'Cover',
-      file: '/Assets/Music/the ocean.mp3',
-      cover: '/Assets/Images/the ocean.png',
+      file: '/Assets/Music/hard to handle.mp3',
+      cover: sharedCover,
+    },
+    {
+      title: 'Chicken Fried',
+      artist: 'Cover',
+      file: '/Assets/Music/chicken fried.mp3',
+      cover: sharedCover,
+    },
+    {
+      title: 'Harder to Breathe',
+      artist: 'Cover',
+      file: '/Assets/Music/harder to breathe.mp3',
+      cover: sharedCover,
     },
   ]
 
@@ -120,53 +121,16 @@ const Music = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300"
+              className="group flex flex-row items-stretch bg-secondary/80 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 min-h-[220px]"
+                className="group flex flex-row items-stretch bg-gradient-to-br from-dark via-dark/70 to-primary/20 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 min-h-[220px] shadow-xl border border-light/10 backdrop-blur-sm"
             >
-              {/* Album Cover */}
-              <div className="relative aspect-square overflow-hidden">
-                <img
-                  src={song.cover}
-                  alt={song.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-60" />
-                
-                {/* Play/Pause Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <motion.button
-                    onClick={() => handlePlayPause(index)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-primary rounded-full p-4 cursor-pointer"
-                  >
-                    {currentPlaying === index ? (
-                      <Pause size={32} fill="white" className="text-white" />
-                    ) : (
-                      <Play size={32} fill="white" className="text-white" />
-                    )}
-                  </motion.button>
-                </div>
-
-                {/* Currently Playing Indicator */}
-                {currentPlaying === index && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-4 right-4 bg-primary rounded-full p-2"
-                  >
-                    <Music2 size={20} className="text-white animate-pulse" />
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Song Info */}
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-secondary text-sm mb-2">
+              {/* Song Info (Left) - wider */}
+              <div className="flex flex-col justify-center flex-[2_2_0%] p-8 min-w-0">
+                <div className="flex items-center gap-2 text-blue-200 text-sm mb-2">
                   <Disc3 size={16} />
                   <span>{song.artist}</span>
                 </div>
-                <h3 className="text-2xl font-bold text-light mb-4">{song.title}</h3>
-                
+                <h3 className="text-2xl font-bold text-white mb-4 whitespace-normal break-words">{song.title}</h3>
                 {/* Progress Bar */}
                 {currentPlaying === index && (
                   <div className="mb-4">
@@ -187,7 +151,6 @@ const Music = () => {
                     </div>
                   </div>
                 )}
-                
                 {/* Play Button */}
                 <button
                   onClick={() => handlePlayPause(index)}
@@ -209,6 +172,23 @@ const Music = () => {
                     </>
                   )}
                 </button>
+              </div>
+              {/* Image (Right) - narrower */}
+              <div className="flex items-center justify-end flex-[1_1_0%] max-w-[180px] min-w-[100px] bg-dark/80">
+                <img
+                  src={sharedCover}
+                  alt="Band Logo"
+                  className="object-contain h-full w-full max-h-56 max-w-full p-4"
+                />
+                {currentPlaying === index && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-4 right-4 bg-primary rounded-full p-2"
+                  >
+                    <Music2 size={20} className="text-white animate-pulse" />
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           ))}
