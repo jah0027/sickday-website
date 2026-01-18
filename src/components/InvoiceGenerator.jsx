@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+
 import { motion } from 'framer-motion'
 import { FileText, Download, Mail, Eye, X, Plus, Trash2 } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+const FerrisImg = '/Assets/Images/ferris.png';
 
 const InvoiceGenerator = ({ invoice, contact, contacts = [], onClose, onSave }) => {
   const [selectedContactId, setSelectedContactId] = useState(contact?.id || null)
@@ -59,15 +61,58 @@ const InvoiceGenerator = ({ invoice, contact, contacts = [], onClose, onSave }) 
 
   const downloadPDF = async () => {
     const element = document.getElementById('invoice-preview')
+    // Save original styles
+    const originalMaxHeight = element.style.maxHeight;
+    const originalOverflow = element.style.overflow;
+    // Remove scroll restriction
+    element.style.maxHeight = 'none';
+    element.style.overflow = 'visible';
+
+    // Wait for style changes to apply
+    await new Promise(r => setTimeout(r, 50));
+
     const canvas = await html2canvas(element, { scale: 2 })
     const imgData = canvas.toDataURL('image/png')
-    
+
+    // Restore original styles
+    element.style.maxHeight = originalMaxHeight;
+    element.style.overflow = originalOverflow;
+
     const pdf = new jsPDF('p', 'mm', 'a4')
-    const imgWidth = 210
+    const pageWidth = 210
+    const pageHeight = 297
+    const imgWidth = pageWidth
     const imgHeight = (canvas.height * imgWidth) / canvas.width
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
-    pdf.save(`${invoiceData.invoice_number}.pdf`)
+
+    // Ask user how many pages to print
+    let maxPages = 1;
+    const userInput = window.prompt('How many pages do you want to print?', '1');
+    if (userInput) {
+      const parsed = parseInt(userInput);
+      if (!isNaN(parsed) && parsed > 0) {
+        maxPages = parsed;
+      }
+    }
+
+    let heightLeft = imgHeight;
+    let position = 0;
+    let pageCount = 0;
+
+    // Add first page
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    position = -pageHeight;
+    pageCount++;
+
+    // Add more pages if needed and within user limit
+    while (heightLeft > 0 && pageCount < maxPages) {
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      position -= pageHeight;
+      pageCount++;
+    }
+    pdf.save(`${invoiceData.invoice_number}.pdf`);
   }
 
   const sendEmail = () => {
@@ -248,10 +293,13 @@ Sick Day with Ferris`
           </div>
 
           {/* Invoice Preview */}
-          <div className="bg-white rounded-xl p-8 text-dark overflow-auto max-h-[600px]" id="invoice-preview">
-            <div className="mb-8">
-              <h1 className="text-4xl font-display font-bold text-[#ff6b6b] mb-2">INVOICE</h1>
-              <p className="text-gray-600">Sick Day with Ferris</p>
+          <div className="bg-white rounded-xl p-8 text-dark overflow-auto max-h-[600px] shadow-lg relative" id="invoice-preview">
+            <div className="flex items-center mb-8">
+              <img src={FerrisImg} alt="SickDay Guy" style={{ height: '120px', marginRight: '2rem', borderRadius: '16px', boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }} />
+              <div>
+                <h1 className="text-4xl font-display font-bold text-blue-600 mb-2">INVOICE</h1>
+                <p className="text-gray-600">Sick Day with Ferris</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-8 mb-8">
@@ -304,14 +352,14 @@ Sick Day with Ferris`
                 </div>
                 <div className="flex justify-between py-3 border-t-2 border-gray-300">
                   <span className="font-bold">Total:</span>
-                  <span className="font-bold text-xl text-[#ff6b6b]">${total.toFixed(2)}</span>
+                  <span className="font-bold text-xl text-blue-600">${total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
             {invoiceData.notes && (
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-600">{invoiceData.notes}</p>
+              <div className="mt-4 flex justify-end">
+                <p className="text-base font-semibold text-blue-600">{invoiceData.notes}</p>
               </div>
             )}
           </div>
