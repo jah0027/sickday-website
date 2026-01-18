@@ -8,6 +8,7 @@ import BandMembers from './BandMembers'
 import AdminBookings from './AdminBookings'
 import AdminBookingsList from './AdminBookingsList'
 import Papa from 'papaparse'
+import InvoiceGenerator from './InvoiceGenerator'
 
 const Admin = () => {
   const navigate = useNavigate()
@@ -579,7 +580,6 @@ const Admin = () => {
             invoices={invoices}
             payments={payments}
             onDelete={deleteContact} 
-            onEdit={(contact) => setEditingContact(contact)} 
             onCreateInvoice={(contact) => { setSelectedContact(contact); setShowInvoiceGenerator(true); }}
             selectedContacts={selectedContacts}
             onToggleSelect={(id) => {
