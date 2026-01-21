@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Papa from 'papaparse';
 import { supabase } from '../lib/supabase';
 import { MessageSquare, Calendar } from 'lucide-react';
 
 // Placeholder for chat UI and calendar UI
 const BandMemberPortal = () => {
+    const fileInputRef = React.useRef(null);
   const [bookings, setBookings] = useState([]);
   const [availability, setAvailability] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
@@ -191,6 +193,54 @@ const BandMemberPortal = () => {
             ))
           )}
         </ul>
+        {/* CSV Import/Export for Block Out Dates */}
+        <div className="flex gap-2 mb-2">
+          <button className="btn-secondary text-xs py-1 px-3" onClick={() => {
+            const csv = Papa.unparse(availability.map(a => {
+              const member = bandMembers.find(m => m.id === a.band_member_id);
+              return {
+                Name: member ? member.name : 'Unknown Member',
+                StartDate: a.date_range_start,
+                EndDate: a.date_range_end,
+                Notes: a.notes || ''
+              };
+            }));
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blockout-dates-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          }}>Export CSV</button>
+          <button className="btn-secondary text-xs py-1 px-3" onClick={() => fileInputRef.current?.click()}>Import CSV</button>
+          <input type="file" accept=".csv" ref={fileInputRef} style={{ display: 'none' }} onChange={e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            Papa.parse(file, {
+              header: true,
+              complete: async (results) => {
+                const imported = results.data.filter(row => row.Name && row.StartDate && row.EndDate);
+                // For each imported row, add to supabase (or update if exists)
+                for (const row of imported) {
+                  // Find member by name
+                  const member = bandMembers.find(m => m.name === row.Name);
+                  if (member) {
+                    await supabase.from('availability').insert({
+                      band_member_id: member.id,
+                      date_range_start: row.StartDate,
+                      date_range_end: row.EndDate,
+                      status: 'unavailable',
+                      notes: row.Notes || ''
+                    });
+                  }
+                }
+                await refreshAvailability();
+                alert(`Imported ${imported.length} block out dates.`);
+              }
+            });
+          }} />
+        </div>
         <div className="mb-2 text-primary font-semibold flex items-center justify-between">
           <span>Block Out Dates (When You Are Not Available)</span>
           <button className="btn-secondary text-xs py-1 px-3" onClick={() => setShowAddForm(f => !f)} disabled={availLoading}>

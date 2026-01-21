@@ -580,6 +580,7 @@ const Admin = () => {
             invoices={invoices}
             payments={payments}
             onDelete={deleteContact} 
+            onEdit={contact => setEditingContact(contact)}
             onCreateInvoice={(contact) => { setSelectedContact(contact); setShowInvoiceGenerator(true); }}
             selectedContacts={selectedContacts}
             onToggleSelect={(id) => {
